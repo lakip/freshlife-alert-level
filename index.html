@@ -1,0 +1,79 @@
+                     <html>
+<head>
+  <script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js"></script>
+  <script src="https://cdn.anychart.com/releases/v8/js/anychart-ui.min.js"></script>
+  <script src="https://cdn.anychart.com/releases/v8/js/anychart-exports.min.js"></script>
+  <script src="https://cdn.anychart.com/releases/v8/js/anychart-pyramid-funnel.min.js"></script>
+  <link href="https://cdn.anychart.com/releases/v8/css/anychart-ui.min.css" type="text/css" rel="stylesheet">
+  <link href="https://cdn.anychart.com/releases/v8/fonts/css/anychart-font.min.css" type="text/css" rel="stylesheet">
+  <style type="text/css">
+
+    html,
+    body,
+    #container {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  
+</style>
+</head>
+<body>
+  
+  <div id="container">
+    
+  </div>
+  
+
+  <script>
+                      
+
+    anychart.onDocumentReady(function () {
+      // prepare data for the chart
+     fetch('https://api.apispreadsheets.com/data/V0fkviJUnEYoTu56/')
+          .then((response) => {
+              return response.json();
+          })
+          .then((myJson) => {
+            
+            // create data variable for the chart
+            var fetchedData = myJson.data
+          
+            var coloredData = fetchedData.map((x)=>({
+              Location:x.Location,Status:x.Status,On_Duty:x["On Duty"],fill:x.Status==25?"green":x.Status==50?"yellow":x.Status==75?"orange":"red"
+            }))
+            console.log('anyT',coloredData)
+            var data = {
+              header: ["Location", "Status","On Duty"],
+              rows: coloredData, 
+            }
+
+
+      // create funnel chart
+      var chart = anychart.funnel(data);
+
+      // set chart margin
+      chart
+        .margin(10, '20%', 10, '20%')
+        // set chart base width settings
+        .baseWidth('70%')
+        // set the neck height
+        .neckHeight('17%');
+
+      // set chart labels settings
+      chart.labels().position('outside-left').format('{%X} - {%Value}');
+
+      // enable animation
+      chart.animation(true);
+
+      // set container id for the chart
+      chart.container('container');
+      // initiate chart drawing
+      chart.draw();
+    });
+  
+</script>
+</body>
+</html>
+                
